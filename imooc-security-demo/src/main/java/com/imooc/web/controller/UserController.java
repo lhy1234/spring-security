@@ -3,9 +3,16 @@ package com.imooc.web.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.data.domain.Pageable;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,7 +34,7 @@ public class UserController {
 	 * @author lihaoyang
 	 * @date 2018年2月24日
 	 */
-	@GetMapping("query")
+	@GetMapping()
 	@JsonView(User.UserSimpleView.class)
 	public List<User> query(
 			//@RequestParam(value="username",required=false,defaultValue="lhy") String username
@@ -53,14 +60,58 @@ public class UserController {
 	 * @author lihaoyang
 	 * @date 2018年2月24日
 	 */
-	@GetMapping("detail/{id:\\d+}") //{}里可以是正则，匹配数字
+	@GetMapping("{id:\\d+}") //{}里可以是正则，匹配数字
 //	@GetMapping("detail/{id}")
 	@JsonView(User.UserDetailView.class)
 	public User getInfo(@PathVariable(value="id",required=true) String id){
 		System.err.println(id);
 		User user = new User();
 		user.setUsername("tom");
+		user.setPassword("123456");
+		user.setId("1");
 		return user;
+	}
+	
+	/**
+	 * 创建
+	 * @Description: 
+	 * //@RequestBody:json映射到java
+	 * 	@Valid 和User类上的@NotBlank注解一起做校验
+	 *  BindingResult存储的是校验错误信息
+	 * @param @param user
+	 * @param @return   
+	 * @return User  
+	 * @throws
+	 * @author lihaoyang
+	 * @date 2018年2月24日
+	 */
+	@PostMapping
+	public User create(@Valid @RequestBody User user,BindingResult errors){
+		
+		if(errors.hasErrors()){
+			errors.getAllErrors().stream()
+			.forEach(error -> System.err.println(error.getDefaultMessage()));
+		}
+		
+		user.setId("1");
+		System.err.println(user);
+		return user;
+	}
+	
+	@PutMapping("/{id:\\d+}")
+	public User update(@Valid @RequestBody User user,BindingResult errors){
+
+		if(errors.hasErrors()){
+			errors.getAllErrors().stream()
+			.forEach(error -> System.err.println(error.getDefaultMessage()));
+		}
+		System.err.println(user);
+		return user;
+	}
+	
+	@DeleteMapping("/{id:\\d+}")
+	public void delete(@PathVariable String id){
+		System.err.println("delete method id is >>>>>>>"+id);
 	}
 
 }

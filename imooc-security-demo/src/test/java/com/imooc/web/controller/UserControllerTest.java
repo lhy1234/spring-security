@@ -1,5 +1,9 @@
 package com.imooc.web.controller;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +37,7 @@ public class UserControllerTest {
 	 */
 	@Test
 	public void whenQuerySuccess() throws Exception{
-		String result = mockMvc.perform(MockMvcRequestBuilders.get("/user/query") //路径
+		String result = mockMvc.perform(MockMvcRequestBuilders.get("/user") //路径
 				.param("page", "10")   //参数
 				.param("size", "12")
 				.param("sort", "age,desc")
@@ -53,7 +57,7 @@ public class UserControllerTest {
 	 */
 	@Test
 	public void whenGetInfoSuccess() throws Exception{
-		String result = mockMvc.perform(MockMvcRequestBuilders.get("/user/detail/1")
+		String result = mockMvc.perform(MockMvcRequestBuilders.get("/user/1")
 				.contentType(MediaType.APPLICATION_JSON_UTF8))
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(MockMvcResultMatchers.jsonPath("$.username").value("tom"))
@@ -66,11 +70,45 @@ public class UserControllerTest {
 	 */
 	@Test
 	public void whenGetInfoFail() throws Exception{
-		mockMvc.perform(MockMvcRequestBuilders.get("/user/detail/a") //匹配正则
+		mockMvc.perform(MockMvcRequestBuilders.get("/user/a") //匹配正则
 				.contentType(MediaType.APPLICATION_JSON_UTF8))
 				.andExpect(MockMvcResultMatchers.status().is4xxClientError());
-				
 	}
 	
+	@Test
+	public void whenCreateSuccess() throws Exception{
+		long date = new Date().getTime();
+		System.err.println(">>>>>>>>"+date);
+		String content = "{\"username\":\"tom\",\"password\":null,\"birthday\":"+date+"}";
+		 String result = mockMvc.perform(MockMvcRequestBuilders.post("/user")
+				 .contentType(MediaType.APPLICATION_JSON_UTF8)
+				 .content(content))
+		 		 .andExpect(MockMvcResultMatchers.status().isOk())
+		 		 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value("1"))
+		 		 .andReturn().getResponse().getContentAsString();
+		 System.err.println(result);
+	}
+	
+	@Test
+	public void whenUpdateSuccess() throws Exception{
+		//jdk8新增，当前日期加一年，测试生日@past注解
+		Date date = new Date(LocalDateTime.now().plusYears(1).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+		System.err.println(">>>>>>>>"+date);
+		String content = "{\"id\":\"1\",\"username\":\"tom\",\"password\":null,\"birthday\":"+date.getTime()+"}";
+		 String result = mockMvc.perform(MockMvcRequestBuilders.put("/user/1") //put
+				 .contentType(MediaType.APPLICATION_JSON_UTF8)
+				 .content(content))
+		 		 .andExpect(MockMvcResultMatchers.status().isOk())
+		 		 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value("1"))
+		 		 .andReturn().getResponse().getContentAsString();
+		 System.err.println("update result>>>>> "+result);
+	}
+	
+	@Test
+	public void whenDeleteSuccess() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.delete("/user/1")
+				.contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andExpect(MockMvcResultMatchers.status().isOk());
+	}
 	
 }
