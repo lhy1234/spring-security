@@ -1,5 +1,6 @@
 package com.imooc.web.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -10,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -109,6 +111,20 @@ public class UserControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.delete("/user/1")
 				.contentType(MediaType.APPLICATION_JSON_UTF8))
 				.andExpect(MockMvcResultMatchers.status().isOk());
+	}
+	
+	//上传文件
+	@Test
+	public void whenUploadSuccess() throws Exception, Exception{
+		String result = mockMvc.perform(MockMvcRequestBuilders.fileUpload("/file")
+				
+				.file(new MockMultipartFile("file", //参数名
+											"test.xml",//文件名
+											"multipart/form-data",
+											"hello upload".getBytes("UTF-8"))))//文件
+				.andExpect(MockMvcResultMatchers.status()
+				.isOk()).andReturn().getResponse().getContentAsString();
+		System.err.println(result);
 	}
 	
 }
