@@ -15,6 +15,7 @@ public class User {
 	
 	private String id;
 	
+	@NotBlank(message="用户名不能为空")
 	private String username;
 	
 	@NotBlank(message="密码不能为空")
@@ -60,6 +61,5 @@ public class User {
 	public String toString() {
 		return "User [id=" + id + ", username=" + username + ", password=" + password + ", birthday=" + birthday + "]";
 	}
-
 	
 }

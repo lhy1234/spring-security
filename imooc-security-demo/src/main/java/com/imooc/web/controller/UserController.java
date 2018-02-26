@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.imooc.dto.User;
 import com.imooc.dto.UserQueryCondition;
+import com.imooc.exception.UserNotExistException;
 
 @RestController
 @RequestMapping("/user")
@@ -34,7 +35,7 @@ public class UserController {
 	 * @author lihaoyang
 	 * @date 2018年2月24日
 	 */
-	@GetMapping()
+	@GetMapping
 	@JsonView(User.UserSimpleView.class)
 	public List<User> query(
 			//@RequestParam(value="username",required=false,defaultValue="lhy") String username
@@ -64,6 +65,10 @@ public class UserController {
 //	@GetMapping("detail/{id}")
 	@JsonView(User.UserDetailView.class)
 	public User getInfo(@PathVariable(value="id",required=true) String id){
+		
+//		throw new RuntimeException("query deltail interface has error!");
+//		throw new UserNotExistException(id);
+		System.err.println(">>>>>>进入User Controller -->  getInfo 方法");
 		System.err.println(id);
 		User user = new User();
 		user.setUsername("tom");
@@ -86,12 +91,12 @@ public class UserController {
 	 * @date 2018年2月24日
 	 */
 	@PostMapping
-	public User create(@Valid @RequestBody User user,BindingResult errors){
+	public User create(@Valid @RequestBody User user){ //,BindingResult errors
 		
-		if(errors.hasErrors()){
-			errors.getAllErrors().stream()
-			.forEach(error -> System.err.println(error.getDefaultMessage()));
-		}
+//		if(errors.hasErrors()){
+//			errors.getAllErrors().stream()
+//			.forEach(error -> System.err.println(error.getDefaultMessage()));
+//		}
 		
 		user.setId("1");
 		System.err.println(user);
