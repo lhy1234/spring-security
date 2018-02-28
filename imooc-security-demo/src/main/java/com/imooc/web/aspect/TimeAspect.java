@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
  * @author lihaoyang
  * @date 2018年2月26日
  */
-@Aspect
-@Component
+//@Aspect
+//@Component
 public class TimeAspect {
 
 	/**

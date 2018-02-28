@@ -1,5 +1,7 @@
 package com.imooc.dto;
 
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * ClassName: UserQueryCondition 
  * @Description:  查询条件
@@ -10,8 +12,9 @@ public class UserQueryCondition {
 
 	private String username;
 	
+	@ApiModelProperty(value="年龄起始值")
 	private String age;
-	
+	@ApiModelProperty(value="年龄终止值")
 	private String ageTo;
 	
 	private String other;

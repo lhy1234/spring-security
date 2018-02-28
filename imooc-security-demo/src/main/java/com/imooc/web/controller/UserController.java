@@ -21,6 +21,9 @@ import com.imooc.dto.User;
 import com.imooc.dto.UserQueryCondition;
 import com.imooc.exception.UserNotExistException;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -37,6 +40,7 @@ public class UserController {
 	 */
 	@GetMapping
 	@JsonView(User.UserSimpleView.class)
+	@ApiOperation(value="用户查询服务")
 	public List<User> query(
 			//@RequestParam(value="username",required=false,defaultValue="lhy") String username
 			UserQueryCondition condition , Pageable pageable){
@@ -64,7 +68,8 @@ public class UserController {
 	@GetMapping("{id:\\d+}") //{}里可以是正则，匹配数字
 //	@GetMapping("detail/{id}")
 	@JsonView(User.UserDetailView.class)
-	public User getInfo(@PathVariable(value="id",required=true) String id){
+	@ApiOperation(value="用户详情服务")
+	public User getInfo(@ApiParam(value="用户id") @PathVariable(value="id",required=true) String id){
 		
 //		throw new RuntimeException("query deltail interface has error!");
 //		throw new UserNotExistException(id);

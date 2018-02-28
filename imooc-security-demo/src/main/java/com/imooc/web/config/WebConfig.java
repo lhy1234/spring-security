@@ -14,7 +14,7 @@ import com.imooc.web.filter.TimeFilter;
 import com.imooc.web.interceptor.TimeInterceptor;
 
 
-@Configuration
+//@Configuration
 public class WebConfig extends WebMvcConfigurerAdapter{
 
 	//由于TimeInterceptor声明为了spring组件，直接注入进来
@@ -25,7 +25,7 @@ public class WebConfig extends WebMvcConfigurerAdapter{
 	 */
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(timeInterceptor);
+//		registry.addInterceptor(timeInterceptor);
 	}
 
 	@Bean
