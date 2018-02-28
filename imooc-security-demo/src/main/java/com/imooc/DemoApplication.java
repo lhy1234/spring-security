@@ -26,7 +26,7 @@ public class DemoApplication {
 	
 	@GetMapping("/hello")
 	public String hello(){
-		return "Hello Spring Security！";
+		return "Hello Spring Security！";  
 	}
 
 }
