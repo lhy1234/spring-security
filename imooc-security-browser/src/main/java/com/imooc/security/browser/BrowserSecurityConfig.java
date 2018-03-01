@@ -7,6 +7,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import com.imooc.security.core.properties.SecurityProperties;
 
@@ -16,6 +18,14 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
 	//读取用户配置的登录页配置
 	@Autowired
 	private SecurityProperties securityProperties;
+	
+	//自定义的登录成功后的处理器
+	@Autowired
+	private AuthenticationSuccessHandler imoocAuthenticationSuccessHandler;
+	
+	//自定义的认证失败后的处理器
+	@Autowired
+	private AuthenticationFailureHandler imoocAuthenticationFailureHandler;
 
 	//注意是org.springframework.security.crypto.password.PasswordEncoder
 	@Bean
@@ -23,6 +33,7 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
 		//BCryptPasswordEncoder implements PasswordEncoder
 		return new BCryptPasswordEncoder();
 	}
+	
 	
 	
 	//版本一：配置死的登录页
@@ -53,6 +64,8 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
 			.loginPage("/authentication/require") //处理用户认证BrowserSecurityController
 			//登录过滤器UsernamePasswordAuthenticationFilter默认登录的url是"/login"，在这能改
 			.loginProcessingUrl("/authentication/form") 
+			.successHandler(imoocAuthenticationSuccessHandler)//自定义的认证后处理器
+			.failureHandler(imoocAuthenticationFailureHandler) //登录失败后的处理
 			.and()
 			.authorizeRequests() //下边的都是授权的配置
 			// /authentication/require：处理登录，securityProperties.getBrowser().getLoginPage():用户配置的登录页
