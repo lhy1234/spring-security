@@ -13,11 +13,26 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.context.request.ServletWebRequest;
+
+import com.imooc.security.core.properties.SecurityProperties;
+
+/**
+ * 验证码生成工具类
+ * ClassName: VerifyCode 
+ * @Description: TODO
+ * @author lihaoyang
+ * @date 2018年3月2日
+ */
 public class VerifyCode {
+	
+    private int w ; //图片长
     
-    private int w = 70;//图片长
+    private int h ;//图片宽
     
-    private int h = 35;//图片宽
+    private int charLength ;//验证码字符个数
     
      private Random r = new Random();//Random类 生成随机数
      
@@ -32,7 +47,23 @@ public class VerifyCode {
     private String text ;
     
     
-    // 生成随机的颜色
+    
+    public VerifyCode() {
+		
+	}
+    
+  
+    
+	public VerifyCode(int w, int h, int charLength) {
+		super();
+		this.w = w;
+		this.h = h;
+		this.charLength = charLength;
+	}
+
+
+
+	// 生成随机的颜色
     private Color randomColor () {
             int red = r.nextInt(150);
             int green = r.nextInt(150);
@@ -75,7 +106,7 @@ public class VerifyCode {
             Graphics2D g2 = (Graphics2D)image.getGraphics(); 
             g2.setColor(this.bgColor);
             g2.fillRect(0, 0, w, h);
-             return image;
+            return image;
     }
     
     // 返回验证码图片上的文本
@@ -95,10 +126,10 @@ public class VerifyCode {
                 Graphics2D g2 = (Graphics2D)image.getGraphics();//得到绘制环境
                 StringBuilder sb = new StringBuilder();//用来装载生成的验证码文本
                 // 向图片中画4个字符
-                for(int i = 0; i < 4; i++)  {//循环四次，每次生成一个字符
+                for(int i = 0; i < charLength; i++)  {//循环四次，每次生成一个字符
                     String s = randomChar() + "";//随机生成一个字母 
                     sb.append(s); //把字母添加到sb中
-                    float x = i * 1.0F * w / 4; //设置当前字符的x轴坐标
+                    float x = i * 1.0F * w / 6; //设置当前字符的x轴坐标,注意图片宽度不同设置这里控制字符显示完全
                     g2.setFont(randomFont()); //设置随机字体
                     g2.setColor(randomColor()); //设置随机颜色
                     g2.drawString(s, x, h-5); //画图
@@ -107,7 +138,7 @@ public class VerifyCode {
                 drawLine(image); //添加干扰线
                 return image;        
         }
-
+        
 
         public static void main(String[] args) throws FileNotFoundException, IOException {
             VerifyCode vc = new VerifyCode();//创建VerifyCode类的对象
