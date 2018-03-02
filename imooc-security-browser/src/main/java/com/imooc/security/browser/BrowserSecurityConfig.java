@@ -9,8 +9,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.imooc.security.core.properties.SecurityProperties;
+import com.imooc.security.core.validate.code.ValidateCodeFilter;
 
 @Configuration //这是一个配置
 public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
@@ -58,9 +60,16 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
 	//版本二：可配置的登录页
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+		//验证码过滤器
+		ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter();
+		//验证码过滤器中使用自己的错误处理
+		validateCodeFilter.setAuthenticationFailureHandler(imoocAuthenticationFailureHandler);
+		
 		//实现需要认证的接口跳转表单登录,安全=认证+授权
 		//http.httpBasic() //这个就是默认的弹框认证
-		http.formLogin() //表单认证
+		//
+		http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)//把验证码过滤器加载登录过滤器前边
+			.formLogin() //表单认证
 			.loginPage("/authentication/require") //处理用户认证BrowserSecurityController
 			//登录过滤器UsernamePasswordAuthenticationFilter默认登录的url是"/login"，在这能改
 			.loginProcessingUrl("/authentication/form") 
