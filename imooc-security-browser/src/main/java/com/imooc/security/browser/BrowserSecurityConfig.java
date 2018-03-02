@@ -64,6 +64,10 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
 		ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter();
 		//验证码过滤器中使用自己的错误处理
 		validateCodeFilter.setAuthenticationFailureHandler(imoocAuthenticationFailureHandler);
+		//配置的验证码过滤url
+		validateCodeFilter.setSecurityProperties(securityProperties);
+		validateCodeFilter.afterPropertiesSet();
+		
 		
 		//实现需要认证的接口跳转表单登录,安全=认证+授权
 		//http.httpBasic() //这个就是默认的弹框认证
