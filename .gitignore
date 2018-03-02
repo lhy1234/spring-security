@@ -135,5 +135,9 @@ Icon
 !wrapper/*.jar
 !**/wrapper/*.jar
 
-
+.project
+.classpath
+.settings
+.metadata
+.gitignore
 
