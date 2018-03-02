@@ -19,7 +19,7 @@ public class ImageCode {
 	
 	private LocalDateTime expireTime;//过期时间点
 	
-
+	
 	/**
 	 * 
 	 * <p>Description: </p>
@@ -79,6 +79,7 @@ public class ImageCode {
 	public void setExpireTime(LocalDateTime expireTime) {
 		this.expireTime = expireTime;
 	}
-	
+
+
 	
 }
