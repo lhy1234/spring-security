@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.imooc.security.browser.support.SimpleResponse;
 import com.imooc.security.core.properties.BrowserProperties;
 import com.imooc.security.core.properties.LoginType;
 import com.imooc.security.core.properties.SecurityProperties;
@@ -52,7 +53,7 @@ public class ImoocAuthenticationFailureHandler
 			//状态码500，服务器内部错误
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.setContentType("application/json;charset=UTF-8");
-			response.getWriter().write(objectMapper.writeValueAsString(exception));
+			response.getWriter().write(objectMapper.writeValueAsString(new SimpleResponse(exception.getMessage())));//值返回异常信息
 		}else{
 			super.onAuthenticationFailure(request, response, exception);
 		}
