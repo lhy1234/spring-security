@@ -12,7 +12,11 @@ public class BrowserProperties {
 	//用户未配置默认登录页
 	private String loginPage = "/login.html"; 
 
+	//登录类型，返回json或还是重定向
 	private LoginType loginType = LoginType.JSON ;
+	
+	//记住我秒数配置
+	private int rememberMeSeconds = 3600;  
 	
 	public String getLoginPage() {
 		return loginPage;
@@ -28,6 +32,14 @@ public class BrowserProperties {
 
 	public void setLoginType(LoginType loginType) {
 		this.loginType = loginType;
+	}
+
+	public int getRememberMeSeconds() {
+		return rememberMeSeconds;
+	}
+
+	public void setRememberMeSeconds(int rememberMeSeconds) {
+		this.rememberMeSeconds = rememberMeSeconds;
 	}
 	
 }
