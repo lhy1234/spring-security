@@ -7,7 +7,15 @@ import org.springframework.context.annotation.Configuration;
 
 import com.imooc.security.core.properties.SecurityProperties;
 
-
+/**
+ * 配置验证码生成接口ValidateCodeGenerator的实际实现类的Bean
+ * ClassName: ValidateCodeBeanConfig 
+ * @Description: 
+ * 	配置验证码生成接口ValidateCodeGenerator的实际实现类的Bean
+ * 	如图片验证码的实现、短信验证码的实现
+ * @author lihaoyang
+ * @date 2018年3月5日
+ */
 @Configuration
 public class ValidateCodeBeanConfig {
 

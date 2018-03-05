@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.social.connect.web.HttpSessionSessionStrategy;
@@ -34,6 +36,8 @@ import com.imooc.security.core.properties.SecurityProperties;
  */
 public class ValidateCodeFilter extends OncePerRequestFilter implements InitializingBean{
 
+	private Logger logger = LoggerFactory.getLogger(getClass());
+	
 	//认证失败处理器
 	private AuthenticationFailureHandler authenticationFailureHandler;
 
@@ -55,8 +59,14 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
 		super.afterPropertiesSet();
 		//读取配置的拦截的urls
 		String[] configUrls = StringUtils.splitByWholeSeparatorPreserveAllTokens(securityProperties.getCode().getImage().getUrl(), ",");
-		for (String configUrl : configUrls) {
-			urls.add(configUrl);
+		//如果配置了需要验证码拦截的url，不判断，如果没有配置会空指针
+		if(configUrls != null && configUrls.length > 0){
+			for (String configUrl : configUrls) {
+				logger.info("ValidateCodeFilter.afterPropertiesSet()--->配置了验证码拦截接口:"+configUrl);
+				urls.add(configUrl);
+			}
+		}else{
+			logger.info("----->没有配置拦验证码拦截接口<-------");
 		}
 		//登录的请求一定拦截
 		urls.add("/authentication/form");
