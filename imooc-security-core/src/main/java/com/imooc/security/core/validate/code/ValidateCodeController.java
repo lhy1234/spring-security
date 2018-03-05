@@ -32,7 +32,7 @@ public class ValidateCodeController {
 //	private SecurityProperties securityProperties;
 	
 	@Autowired
-	private ImageCodeGenerator imageCodeGenerator;
+	private ValidateCodeGenerator imageCodeGenerator;
 	
 	//获取session
 	private SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
