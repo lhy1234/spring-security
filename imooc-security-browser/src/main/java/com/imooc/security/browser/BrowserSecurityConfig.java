@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.social.security.SpringSocialConfigurer;
 
 import com.imooc.security.core.properties.SecurityProperties;
 import com.imooc.security.core.validate.code.ValidateCodeFilter;
@@ -41,6 +42,9 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Autowired
 	private UserDetailsService userDetailsService;
+	
+	@Autowired
+	private SpringSocialConfigurer imoocSocialSecurityConfig;
 
 	//注意是org.springframework.security.crypto.password.PasswordEncoder
 	@Bean
@@ -105,7 +109,11 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
 		//实现需要认证的接口跳转表单登录,安全=认证+授权
 		//http.httpBasic() //这个就是默认的弹框认证
 		//
-		http //把验证码过滤器加载登录过滤器前边
+		http 
+		
+			.apply(imoocSocialSecurityConfig)//社交登录
+			.and()
+			//把验证码过滤器加载登录过滤器前边
 			.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
 			//表单认证相关配置
 			.formLogin() 

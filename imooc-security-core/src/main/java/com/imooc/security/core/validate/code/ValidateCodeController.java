@@ -37,6 +37,17 @@ public class ValidateCodeController {
 	//获取session
 	private SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
 	
+	/**
+	 * 图片验证码
+	 * @Description: TODO
+	 * @param @param request
+	 * @param @param response
+	 * @param @throws IOException   
+	 * @return void  
+	 * @throws
+	 * @author lihaoyang
+	 * @date 2018年3月7日
+	 */
 	@GetMapping("/verifycode/image")
 	public void createCode(HttpServletRequest request,HttpServletResponse response) throws IOException{
 		
@@ -59,5 +70,27 @@ public class ValidateCodeController {
 //		VerifyCode verifyCode = new VerifyCode(width,height,charLength);
 //		return new ImageCode(verifyCode.getImage(),verifyCode.getText(),this.securityProperties.getCode().getImage().getExpireIn());
 //	}
+	
+	/**
+	 * 短信验证码
+	 * @Description: TODO
+	 * @param @param request
+	 * @param @param response
+	 * @param @throws IOException   
+	 * @return void  
+	 * @throws
+	 * @author lihaoyang
+	 * @date 2018年3月7日
+	 */
+	@GetMapping("/verifycode/sms")
+	public void createSmsCode(HttpServletRequest request,HttpServletResponse response) throws IOException{
+		
+//		ImageCode imageCode = createImageCode(request, response);
+		//调图片生成接口方式
+		ImageCode imageCode = imageCodeGenerator.generator(new ServletWebRequest(request));
+		
+		sessionStrategy.setAttribute(new ServletWebRequest(request), SESSION_KEY, imageCode);
+		ImageIO.write(imageCode.getImage(), "JPEG", response.getOutputStream());
+	}
 
 }

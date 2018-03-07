@@ -19,10 +19,23 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix="imooc.security")
 public class SecurityProperties {
 
+	//浏览器相关配置
 	private BrowserProperties browser = new BrowserProperties();
 	
+	//验证码相关配置
 	private ValidateCodeProperties code = new ValidateCodeProperties();
 	
+	//第三方登录相关配置
+	private SocialProperties social = new SocialProperties();
+	
+
+	public SocialProperties getSocial() {
+		return social;
+	}
+
+	public void setSocial(SocialProperties social) {
+		this.social = social;
+	}
 
 	public BrowserProperties getBrowser() {
 		return browser;
