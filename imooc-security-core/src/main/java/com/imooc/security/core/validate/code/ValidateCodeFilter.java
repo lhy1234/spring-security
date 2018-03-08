@@ -22,6 +22,7 @@ import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.imooc.security.core.properties.SecurityConstants;
 import com.imooc.security.core.properties.SecurityProperties;
 
 /**
@@ -69,7 +70,7 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
 			logger.info("----->没有配置拦验证码拦截接口<-------");
 		}
 		//登录的请求一定拦截
-		urls.add("/authentication/form");
+		urls.add(SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_FORM);
 	}
 
 	@Override

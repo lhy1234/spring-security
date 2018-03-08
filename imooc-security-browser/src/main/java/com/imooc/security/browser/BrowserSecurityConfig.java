@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import org.springframework.social.security.SpringSocialConfigurer;
 
 import com.imooc.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
+import com.imooc.security.core.properties.SecurityConstants;
 import com.imooc.security.core.properties.SecurityProperties;
 import com.imooc.security.core.validate.code.SmsCodeFilter;
 import com.imooc.security.core.validate.code.ValidateCodeFilter;
@@ -131,9 +132,9 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
 			.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
 			//表单认证相关配置
 			.formLogin() 
-				.loginPage("/authentication/require") //处理用户认证BrowserSecurityController
+				.loginPage(SecurityConstants.DEFAULT_UNAUTHENTICATION_URL) //处理用户认证BrowserSecurityController
 				//登录过滤器UsernamePasswordAuthenticationFilter默认登录的url是"/login"，在这能改
-				.loginProcessingUrl("/authentication/form") 
+				.loginProcessingUrl(SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_FORM) 
 				.successHandler(imoocAuthenticationSuccessHandler)//自定义的认证后处理器
 				.failureHandler(imoocAuthenticationFailureHandler) //登录失败后的处理
 				.and()
@@ -146,9 +147,9 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
 			//授权相关的配置 
 			.authorizeRequests() 
 				// /authentication/require：处理登录，securityProperties.getBrowser().getLoginPage():用户配置的登录页
-				.antMatchers("/authentication/require",
+				.antMatchers(SecurityConstants.DEFAULT_UNAUTHENTICATION_URL,
 				securityProperties.getBrowser().getLoginPage(),//放过登录页不过滤，否则报错
-				"/verifycode/*").permitAll() //验证码
+				SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX+"/*").permitAll() //验证码
 				.anyRequest()		//任何请求
 				.authenticated()	//都需要身份认证
 			.and()

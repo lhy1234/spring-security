@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.ServletWebRequest;
 
+import com.imooc.security.core.properties.SecurityConstants;
 import com.imooc.security.core.properties.SecurityProperties;
 import com.imooc.security.core.validate.code.sms.SmsCodeSender;
 
@@ -58,7 +59,7 @@ public class ValidateCodeController {
 	 * @author lihaoyang
 	 * @date 2018年3月7日
 	 */
-	@GetMapping("/verifycode/image")
+	@GetMapping(SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX+"/image")
 	public void createCode(HttpServletRequest request,HttpServletResponse response) throws IOException{
 		
 //		ImageCode imageCode = createImageCode(request, response);
@@ -93,7 +94,7 @@ public class ValidateCodeController {
 	 * @author lihaoyang
 	 * @date 2018年3月7日
 	 */
-	@GetMapping("/verifycode/sms")
+	@GetMapping(SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX+"/sms")
 	public void createSmsCode(HttpServletRequest request,HttpServletResponse response) throws Exception{
 
 		//调验证码生成接口方式

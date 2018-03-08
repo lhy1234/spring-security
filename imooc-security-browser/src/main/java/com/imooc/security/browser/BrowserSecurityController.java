@@ -20,7 +20,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.imooc.security.browser.support.SimpleResponse;
+import com.imooc.security.core.properties.SecurityConstants;
 import com.imooc.security.core.properties.SecurityProperties;
+
+import io.undertow.servlet.api.SecurityConstraint;
 
 /**
  * 处理用户认证Controller，浏览器和app的请求做不同的处理
@@ -54,7 +57,7 @@ public class BrowserSecurityController {
 	 * @author lihaoyang
 	 * @date 2018年2月28日
 	 */
-	@RequestMapping("/authentication/require")
+	@RequestMapping(SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_FORM)
 	@ResponseStatus(code=HttpStatus.UNAUTHORIZED)//返回状态码401 未授权
 	public SimpleResponse requireAuthentication(HttpServletRequest request,HttpServletResponse response) throws Exception{
 		//拿出缓存的请求 引发跳转的请求

@@ -10,7 +10,7 @@ package com.imooc.security.core.properties;
 public class BrowserProperties {
 
 	//用户未配置默认登录页
-	private String loginPage = "/login.html"; 
+	private String loginPage = SecurityConstants.DEFAULT_LOGIN_PAGE; 
 
 	//登录类型，返回json或还是重定向
 	private LoginType loginType = LoginType.JSON ;

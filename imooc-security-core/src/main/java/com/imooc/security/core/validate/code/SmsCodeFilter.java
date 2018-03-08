@@ -22,6 +22,7 @@ import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.imooc.security.core.properties.SecurityConstants;
 import com.imooc.security.core.properties.SecurityProperties;
 
 /**
@@ -69,7 +70,7 @@ public class SmsCodeFilter extends OncePerRequestFilter implements InitializingB
 			logger.info("----->没有配置拦验证码拦截接口<-------");
 		}
 		//短信验证码登录一定拦截
-		urls.add("/authentication/mobile");
+		urls.add(SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_MOBILE);
 	}
 
 	@Override
