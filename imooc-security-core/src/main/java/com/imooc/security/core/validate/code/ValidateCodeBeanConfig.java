@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.imooc.security.core.properties.SecurityProperties;
+import com.imooc.security.core.validate.code.sms.DefaultSmsCodeSender;
+import com.imooc.security.core.validate.code.sms.SmsCodeSender;
 
 /**
  * 配置验证码生成接口ValidateCodeGenerator的实际实现类的Bean
@@ -24,6 +26,7 @@ public class ValidateCodeBeanConfig {
 	
 	/**
 	 * @Description: 
+	 * 配置图片验证码生成bean
 	 * @ConditionalOnMissingBean注解意思是当spring容器不存在imageCodeGenerator时才给配置一个该bean
 	 * 作用是使程序更具可扩展性，该配置类是配置在core模块，这就意味着，如果引用该模块的项目
 	 * 如果有一个自己的实现，实现了ValidateCodeGenerator接口，定义了自己的实现，名字也叫imageCodeGenerator时，
@@ -40,5 +43,20 @@ public class ValidateCodeBeanConfig {
 		ImageCodeGenerator codeGenerator = new ImageCodeGenerator();
 		codeGenerator.setSecurityProperties(securityProperties);
 		return codeGenerator;
+	}
+	
+	/**
+	 * 配置短信验证码生成bean
+	 * @Description: 
+	 * @param @return   
+	 * @return SmsCodeSender  
+	 * @throws
+	 * @author lihaoyang
+	 * @date 2018年3月7日
+	 */
+	@Bean
+	@ConditionalOnMissingBean(SmsCodeSender.class)
+	public SmsCodeSender smsCodeSender(){
+		return new DefaultSmsCodeSender();
 	}
 }

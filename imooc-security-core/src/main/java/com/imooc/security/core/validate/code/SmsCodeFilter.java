@@ -25,7 +25,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.imooc.security.core.properties.SecurityProperties;
 
 /**
- * 处理登录验证码过滤器
+ * 短信验证码过滤器
  * ClassName: ValidateCodeFilter 
  * @Description:
  *  继承OncePerRequestFilter：spring提供的工具，保证过滤器每次只会被调用一次
@@ -34,7 +34,7 @@ import com.imooc.security.core.properties.SecurityProperties;
  * @author lihaoyang
  * @date 2018年3月2日
  */
-public class ValidateCodeFilter extends OncePerRequestFilter implements InitializingBean{
+public class SmsCodeFilter extends OncePerRequestFilter implements InitializingBean{
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
@@ -58,7 +58,7 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
 	public void afterPropertiesSet() throws ServletException {
 		super.afterPropertiesSet();
 		//读取配置的拦截的urls
-		String[] configUrls = StringUtils.splitByWholeSeparatorPreserveAllTokens(securityProperties.getCode().getImage().getUrl(), ",");
+		String[] configUrls = StringUtils.splitByWholeSeparatorPreserveAllTokens(securityProperties.getCode().getSms().getUrl(), ",");
 		//如果配置了需要验证码拦截的url，不判断，如果没有配置会空指针
 		if(configUrls != null && configUrls.length > 0){
 			for (String configUrl : configUrls) {
@@ -68,8 +68,8 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
 		}else{
 			logger.info("----->没有配置拦验证码拦截接口<-------");
 		}
-		//登录的请求一定拦截
-		urls.add("/authentication/form");
+		//短信验证码登录一定拦截
+		urls.add("/authentication/mobile");
 	}
 
 	@Override
@@ -124,26 +124,26 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
 	 */
 	private void validate(ServletWebRequest request) throws ServletRequestBindingException {
 		//拿出session中的ImageCode对象
-		ImageCode imageCodeInSession = (ImageCode) sessionStrategy.getAttribute(request, ValidateCodeController.SESSION_KEY_IMAGE);
+		ValidateCode smsCodeInSession = (ValidateCode) sessionStrategy.getAttribute(request, ValidateCodeController.SESSION_KEY_SMS);
 		//拿出请求中的验证码
-		String imageCodeInRequest = ServletRequestUtils.getStringParameter(request.getRequest(), "imageCode");
+		String imageCodeInRequest = ServletRequestUtils.getStringParameter(request.getRequest(), "smsCode");
 		//校验
 		if(StringUtils.isBlank(imageCodeInRequest)){
 			throw new ValidateCodeException("验证码不能为空");
 		}
-		if(imageCodeInSession == null){
+		if(smsCodeInSession == null){
 			throw new ValidateCodeException("验证码不存在，请刷新验证码");
 		} 
-		if(imageCodeInSession.isExpired()){
+		if(smsCodeInSession.isExpired()){
 			//从session移除过期的验证码
-			sessionStrategy.removeAttribute(request, ValidateCodeController.SESSION_KEY_IMAGE);
+			sessionStrategy.removeAttribute(request, ValidateCodeController.SESSION_KEY_SMS);
 			throw new ValidateCodeException("验证码已过期，请刷新验证码");
 		}
-		if(!StringUtils.equalsIgnoreCase(imageCodeInSession.getCode(), imageCodeInRequest)){
+		if(!StringUtils.equalsIgnoreCase(smsCodeInSession.getCode(), imageCodeInRequest)){
 			throw new ValidateCodeException("验证码错误");
 		}
 		//验证通过，移除session中验证码
-		sessionStrategy.removeAttribute(request, ValidateCodeController.SESSION_KEY_IMAGE);
+		sessionStrategy.removeAttribute(request, ValidateCodeController.SESSION_KEY_SMS);
 	}
 
 	public AuthenticationFailureHandler getAuthenticationFailureHandler() {

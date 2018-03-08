@@ -11,15 +11,19 @@ import org.springframework.web.context.request.ServletWebRequest;
  */
 public interface ValidateCodeGenerator {
 
-	/**
-	 * 图片验证码生成接口
-	 * @Description: TODO
-	 * @param @param request
-	 * @param @return   
-	 * @return ImageCode  
-	 * @throws
-	 * @author lihaoyang
-	 * @date 2018年3月2日
-	 */
-	ImageCode generator(ServletWebRequest request);
+//	/**
+//	 * 图片验证码生成接口
+//	 * @Description: TODO
+//	 * @param @param request
+//	 * @param @return   
+//	 * @return ImageCode  
+//	 * @throws
+//	 * @author lihaoyang
+//	 * @date 2018年3月2日
+//	 */
+//	ImageCode generator(ServletWebRequest request);
+	
+	
+	ValidateCode generator(ServletWebRequest request);
+	
 }

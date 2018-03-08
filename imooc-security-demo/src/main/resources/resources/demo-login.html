@@ -43,5 +43,31 @@
     		</tr>
     	</table>
     </form>
+    <hr>
+    	短信 登录 <br>
+    <form action="/authentication/mobile" method="post">
+    	<table>
+    		<tr>
+    			<td>手机号：</td>
+    			<td><input type="text" name="mobile" value="13812349876"/></td>
+    			<td></td>
+    		</tr>
+    		<tr>
+    			<td>短信验证码：</td>
+    			<td>
+    				<input width="100" type="text" name="smsCode"/>
+    				<a href="/verifycode/sms?mobile=13812349876">发送验证码</a>
+    			</td>
+    			<td></td>
+    		</tr>
+    		<tr>
+    			<td>记住我</td>
+    			<td><input type="checkbox" name="remember-me" value="true"/></td>
+    		</tr>
+    		<tr>
+    			<td colspan="2" align="right"><button type="submit">登录</button></td>
+    		</tr>
+    	</table>
+    </form>
   </body>
 </html>

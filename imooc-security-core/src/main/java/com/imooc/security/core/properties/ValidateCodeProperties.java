@@ -9,8 +9,19 @@ package com.imooc.security.core.properties;
  */
 public class ValidateCodeProperties {
 	
-	//默认配置
+	//图片验证码配置
 	private ImageCodeProperties image = new ImageCodeProperties();
+	
+	//短信验证码配置
+	private SmsCodeProperties sms = new SmsCodeProperties();
+		
+	public SmsCodeProperties getSms() {
+		return sms;
+	}
+
+	public void setSms(SmsCodeProperties sms) {
+		this.sms = sms;
+	}
 
 	public ImageCodeProperties getImage() {
 		return image;
