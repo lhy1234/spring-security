@@ -15,8 +15,11 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.session.InvalidSessionStrategy;
+import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 import org.springframework.social.security.SpringSocialConfigurer;
 
+import com.imooc.security.browser.session.ImoocExpiredSessionStrategy;
 import com.imooc.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import com.imooc.security.core.properties.SecurityConstants;
 import com.imooc.security.core.properties.SecurityProperties;
@@ -48,6 +51,13 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Autowired
 	private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
+	
+	@Autowired
+	private SessionInformationExpiredStrategy sessionInformationExpiredStrategy;
+	
+	@Autowired
+	private InvalidSessionStrategy invalidSessionStrategy;
+	
 	
 	@Autowired
 	private SpringSocialConfigurer imoocSocialSecurityConfig;
@@ -130,7 +140,7 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
 //			.and()
 			//把验证码过滤器加载登录过滤器前边
 			.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
-			//表单认证相关配置
+			//----------表单认证相关配置---------------
 			.formLogin() 
 				.loginPage(SecurityConstants.DEFAULT_UNAUTHENTICATION_URL) //处理用户认证BrowserSecurityController
 				//登录过滤器UsernamePasswordAuthenticationFilter默认登录的url是"/login"，在这能改
@@ -138,17 +148,28 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
 				.successHandler(imoocAuthenticationSuccessHandler)//自定义的认证后处理器
 				.failureHandler(imoocAuthenticationFailureHandler) //登录失败后的处理
 				.and()
-			//记住我相关配置	
+			//------------记住我相关配置	-------------
 			.rememberMe()
 				.tokenRepository(persistentTokenRepository())//TokenRepository，登录成功后往数据库存token的
 				.tokenValiditySeconds(securityProperties.getBrowser().getRememberMeSeconds())//记住我秒数
 				.userDetailsService(userDetailsService) //记住我成功后，调用userDetailsService查询用户信息
+			.and()//-----------session相关配置---------------
+			.sessionManagement()
+				.invalidSessionStrategy(invalidSessionStrategy)
+				.maximumSessions(securityProperties.getBrowser().getSession().getMaximumSessions())
+//				.invalidSessionUrl(SecurityConstants.SESSION_INVALID_PAGE) //session失效跳转地址
+//				.maximumSessions(1) //一个用户只能登录一次
+				.maxSessionsPreventsLogin(securityProperties.getBrowser().getSession().isMaxSessionsPreventsLogin())//阻止在登录
+				.expiredSessionStrategy(sessionInformationExpiredStrategy) //session失效策略
+			.and() //?俩and为啥呢
 			.and()
-			//授权相关的配置 
+			//-----------授权相关的配置 ---------------------
 			.authorizeRequests() 
 				// /authentication/require：处理登录，securityProperties.getBrowser().getLoginPage():用户配置的登录页
-				.antMatchers(SecurityConstants.DEFAULT_UNAUTHENTICATION_URL,
+				.antMatchers(SecurityConstants.DEFAULT_UNAUTHENTICATION_URL, 
 				securityProperties.getBrowser().getLoginPage(),//放过登录页不过滤，否则报错
+				SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_MOBILE,
+				SecurityConstants.SESSION_INVALID_PAGE,
 				SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX+"/*").permitAll() //验证码
 				.anyRequest()		//任何请求
 				.authenticated()	//都需要身份认证

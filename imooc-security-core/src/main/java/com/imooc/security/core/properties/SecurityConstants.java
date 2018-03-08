@@ -12,7 +12,17 @@ public interface SecurityConstants {
 	/**
 	 * 默认的登录页
 	 */
-	public static final String DEFAULT_LOGIN_PAGE = "/login.html";
+	public static final String DEFAULT_LOGIN_PAGE = "/demo-login.html";
+	
+	/**
+	 * session失效时的处理
+	 */
+	public static final String SESSION_INVALID_PAGE = "/session/invalid";
+	
+	/**
+	 * session失效时的跳转的页面
+	 */
+	public static final String DEFAULT_SESSION_INVALID_URL = "/imooc-session-invalid.html";
 	
 	/**
 	 * 需要身份认证时，默认跳转的url

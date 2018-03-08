@@ -6,6 +6,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.imooc.dto.User;
 import com.imooc.dto.UserQueryCondition;
-import com.imooc.exception.UserNotExistException;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -78,7 +79,7 @@ public class UserController {
 		User user = new User();
 		user.setUsername("tom");
 		user.setPassword("123456");
-		user.setId("1");
+		user.setId(id);
 		return user;
 	}
 	
@@ -123,5 +124,11 @@ public class UserController {
 	public void delete(@PathVariable String id){
 		System.err.println("delete method id is >>>>>>>"+id);
 	}
+	
+	@GetMapping("/me")
+	public Object getCurrentUser(@AuthenticationPrincipal UserDetails user) {
+		return user;
+	}
+
 
 }
