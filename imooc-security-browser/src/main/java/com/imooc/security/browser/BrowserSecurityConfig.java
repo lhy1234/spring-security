@@ -20,6 +20,7 @@ import org.springframework.security.web.session.SessionInformationExpiredStrateg
 import org.springframework.social.security.SpringSocialConfigurer;
 
 import com.imooc.security.browser.session.ImoocExpiredSessionStrategy;
+import com.imooc.security.browser.session.ImoocExpiredSessionStrategy2;
 import com.imooc.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import com.imooc.security.core.properties.SecurityConstants;
 import com.imooc.security.core.properties.SecurityProperties;
@@ -147,7 +148,7 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
 				.loginProcessingUrl(SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_FORM) 
 				.successHandler(imoocAuthenticationSuccessHandler)//自定义的认证后处理器
 				.failureHandler(imoocAuthenticationFailureHandler) //登录失败后的处理
-				.and()
+				.and() 
 			//------------记住我相关配置	-------------
 			.rememberMe()
 				.tokenRepository(persistentTokenRepository())//TokenRepository，登录成功后往数据库存token的
@@ -155,16 +156,22 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
 				.userDetailsService(userDetailsService) //记住我成功后，调用userDetailsService查询用户信息
 			.and()//-----------session相关配置---------------
 			.sessionManagement()
+				//++++++=基本这样配置++++++++
+//				.invalidSessionUrl(SecurityConstants.SESSION_INVALID_PAGE) //session失效跳转地址，如果简单的处理只要这一个就够了
+//				.maximumSessions(1) //一个用户只能登录一次，踢出前边登录用户
+//				.expiredSessionStrategy(new ImoocExpiredSessionStrategy2()) //简洁版session失效策略
+//				.maxSessionsPreventsLogin(true) //阻止并发登录
+				
+//				
+				//++++++++重构后+++++++
 				.invalidSessionStrategy(invalidSessionStrategy)
 				.maximumSessions(securityProperties.getBrowser().getSession().getMaximumSessions())
-//				.invalidSessionUrl(SecurityConstants.SESSION_INVALID_PAGE) //session失效跳转地址
-//				.maximumSessions(1) //一个用户只能登录一次
 				.maxSessionsPreventsLogin(securityProperties.getBrowser().getSession().isMaxSessionsPreventsLogin())//阻止在登录
 				.expiredSessionStrategy(sessionInformationExpiredStrategy) //session失效策略
 			.and() //?俩and为啥呢
 			.and()
 			//-----------授权相关的配置 ---------------------
-			.authorizeRequests() 
+			.authorizeRequests()  
 				// /authentication/require：处理登录，securityProperties.getBrowser().getLoginPage():用户配置的登录页
 				.antMatchers(SecurityConstants.DEFAULT_UNAUTHENTICATION_URL, 
 				securityProperties.getBrowser().getLoginPage(),//放过登录页不过滤，否则报错
