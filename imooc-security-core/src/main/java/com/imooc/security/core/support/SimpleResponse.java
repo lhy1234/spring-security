@@ -1,4 +1,4 @@
-package com.imooc.security.browser.support;
+package com.imooc.security.core.support;
 
 /**
  * 认证处理控制器响应信息

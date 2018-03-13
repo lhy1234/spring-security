@@ -1,7 +1,5 @@
 package com.imooc.security.browser;
 
-import java.io.IOException;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,11 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.imooc.security.browser.support.SimpleResponse;
 import com.imooc.security.core.properties.SecurityConstants;
 import com.imooc.security.core.properties.SecurityProperties;
-
-import io.undertow.servlet.api.SecurityConstraint;
+import com.imooc.security.core.support.SimpleResponse;
 
 /**
  * 处理用户认证Controller，浏览器和app的请求做不同的处理

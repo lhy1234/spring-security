@@ -1,4 +1,4 @@
-package com.imooc.security.browser.authentication;
+package com.imooc.security.app.authentication;
 
 import java.io.IOException;
 

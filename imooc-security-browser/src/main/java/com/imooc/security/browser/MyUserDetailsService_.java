@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
  * @author lihaoyang
  * @date 2018年2月28日
  */
-@Component
+//@Component
 public class MyUserDetailsService_ implements UserDetailsService,SocialUserDetailsService{
 	
 	private Logger logger = LoggerFactory.getLogger(getClass());

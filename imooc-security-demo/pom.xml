@@ -11,9 +11,16 @@
   
   <dependencies>
   
-  	<dependency>
+    <!-- 浏览器项目 -->
+  	<!-- <dependency>
   		<groupId>com.imooc.security</groupId>
   		<artifactId>imooc-security-browser</artifactId>
+  		<version>${imooc.security.version}</version>
+  	</dependency> -->
+  	 <!-- APP项目 -->
+  	<dependency>
+  		<groupId>com.imooc.security</groupId>
+  		<artifactId>imooc-security-app</artifactId>
   		<version>${imooc.security.version}</version>
   	</dependency>
   	

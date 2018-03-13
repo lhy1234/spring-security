@@ -63,12 +63,6 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
 	@Autowired
 	private SpringSocialConfigurer imoocSocialSecurityConfig;
 
-	//注意是org.springframework.security.crypto.password.PasswordEncoder
-	@Bean
-	public PasswordEncoder passwordencoder(){
-		//BCryptPasswordEncoder implements PasswordEncoder
-		return new BCryptPasswordEncoder();
-	}
 	
 	
 	/**
