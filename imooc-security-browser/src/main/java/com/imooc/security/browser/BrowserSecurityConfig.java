@@ -18,7 +18,7 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import org.springframework.security.web.session.InvalidSessionStrategy;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 import org.springframework.social.security.SpringSocialConfigurer;
-
+ 
 import com.imooc.security.browser.session.ImoocExpiredSessionStrategy;
 import com.imooc.security.browser.session.ImoocExpiredSessionStrategy2;
 import com.imooc.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
@@ -174,7 +174,7 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
 				SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX+"/*").permitAll() //验证码
 				.anyRequest()		//任何请求
 				.authenticated()	//都需要身份认证
-			.and()
+			.and() 
 				.csrf().disable() //关闭csrf防护
 			.apply(smsCodeAuthenticationSecurityConfig);//把短信验证码配置应用上
 	}

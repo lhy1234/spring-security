@@ -13,6 +13,8 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.social.connect.web.HttpSessionSessionStrategy;
 import org.springframework.social.connect.web.SessionStrategy;
@@ -44,6 +46,9 @@ public class SmsCodeFilter extends OncePerRequestFilter implements InitializingB
 
 	//获取session工具类
 	private SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
+	
+	private ValidateCodeRepository validateCodeRepository; 
+	
 	
 	//需要拦截的url集合
 	private Set<String> urls = new HashSet<>();
@@ -125,26 +130,31 @@ public class SmsCodeFilter extends OncePerRequestFilter implements InitializingB
 	 */
 	private void validate(ServletWebRequest request) throws ServletRequestBindingException {
 		//拿出session中的ImageCode对象
-		ValidateCode smsCodeInSession = (ValidateCode) sessionStrategy.getAttribute(request, ValidateCodeController.SESSION_KEY_SMS);
+//		ValidateCode smsCodeInSession = (ValidateCode) sessionStrategy.getAttribute(request, ValidateCodeController.SESSION_KEY_SMS);
+		//根据不同的存储策略调用不同的获取方式
+		ValidateCode validateCode = validateCodeRepository.get(request, ValidateCodeType.SMS);
+		
 		//拿出请求中的验证码
-		String imageCodeInRequest = ServletRequestUtils.getStringParameter(request.getRequest(), "smsCode");
+		String imageCodeInRequest = ServletRequestUtils.getStringParameter(request.getRequest(), SecurityConstants.DEFAULT_PARAMETER_NAME_CODE_SMS);
 		//校验
 		if(StringUtils.isBlank(imageCodeInRequest)){
 			throw new ValidateCodeException("验证码不能为空");
 		}
-		if(smsCodeInSession == null){
+		if(validateCode == null){
 			throw new ValidateCodeException("验证码不存在，请刷新验证码");
 		} 
-		if(smsCodeInSession.isExpired()){
+		if(validateCode.isExpired()){
 			//从session移除过期的验证码
-			sessionStrategy.removeAttribute(request, ValidateCodeController.SESSION_KEY_SMS);
+//			sessionStrategy.removeAttribute(request, ValidateCodeController.SESSION_KEY_SMS);
+			validateCodeRepository.remove(request, ValidateCodeType.SMS);
 			throw new ValidateCodeException("验证码已过期，请刷新验证码");
 		}
-		if(!StringUtils.equalsIgnoreCase(smsCodeInSession.getCode(), imageCodeInRequest)){
+		if(!StringUtils.equalsIgnoreCase(validateCode.getCode(), imageCodeInRequest)){
 			throw new ValidateCodeException("验证码错误");
 		}
 		//验证通过，移除session中验证码
-		sessionStrategy.removeAttribute(request, ValidateCodeController.SESSION_KEY_SMS);
+//		sessionStrategy.removeAttribute(request, ValidateCodeController.SESSION_KEY_SMS);
+		validateCodeRepository.remove(request, ValidateCodeType.SMS);
 	}
 
 	public AuthenticationFailureHandler getAuthenticationFailureHandler() {
@@ -161,6 +171,14 @@ public class SmsCodeFilter extends OncePerRequestFilter implements InitializingB
 
 	public void setSecurityProperties(SecurityProperties securityProperties) {
 		this.securityProperties = securityProperties;
+	}
+
+	public ValidateCodeRepository getValidateCodeRepository() {
+		return validateCodeRepository;
+	}
+
+	public void setValidateCodeRepository(ValidateCodeRepository validateCodeRepository) {
+		this.validateCodeRepository = validateCodeRepository;
 	}
 	
 	

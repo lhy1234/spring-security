@@ -1,6 +1,7 @@
 package com.imooc.security.core.validate.code;
 
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -11,9 +12,14 @@ import java.time.LocalTime;
  * @author lihaoyang
  * @date 2018年3月1日
  */
-public class ValidateCode {
+public class ValidateCode implements Serializable{
 
 	
+	/**
+	 * @Fields serialVersionUID : TODO
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private String code;
 	
 	private LocalDateTime expireTime;//过期时间点

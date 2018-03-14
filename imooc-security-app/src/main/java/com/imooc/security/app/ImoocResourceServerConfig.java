@@ -12,6 +12,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.imooc.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import com.imooc.security.core.properties.SecurityConstants;
 import com.imooc.security.core.properties.SecurityProperties;
+import com.imooc.security.core.validate.code.SmsCodeFilter;
+import com.imooc.security.core.validate.code.ValidateCodeFilter;
+import com.imooc.security.core.validate.code.ValidateCodeRepository;
 
 /**
  * 资源服务器，和认证服务器在物理上可以在一起也可以分开
@@ -39,10 +42,36 @@ public class ImoocResourceServerConfig extends ResourceServerConfigurerAdapter{
 	@Autowired
 	private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
 	
+	@Autowired
+	private ValidateCodeRepository validateCodeRepository;
+	
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
 	
+		//~~~-------------> 图片验证码过滤器 <------------------
+		ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter();
+		validateCodeFilter.setValidateCodeRepository(validateCodeRepository);
+		//验证码过滤器中使用自己的错误处理
+		validateCodeFilter.setAuthenticationFailureHandler(imoocAuthenticationFailureHandler);
+		//配置的验证码过滤url
+		validateCodeFilter.setSecurityProperties(securityProperties);
+		validateCodeFilter.afterPropertiesSet();
+		
+		//~~~-------------> 短信验证码过滤器 <------------------
+		SmsCodeFilter smsCodeFilter = new SmsCodeFilter();
+		smsCodeFilter.setValidateCodeRepository(validateCodeRepository);
+		//验证码过滤器中使用自己的错误处理
+		smsCodeFilter.setAuthenticationFailureHandler(imoocAuthenticationFailureHandler);
+		//配置的验证码过滤url
+		smsCodeFilter.setSecurityProperties(securityProperties);
+		smsCodeFilter.afterPropertiesSet();
+
 		http 
+		.addFilterBefore(smsCodeFilter, UsernamePasswordAuthenticationFilter.class)
+//		.apply(imoocSocialSecurityConfig)//社交登录
+//		.and()
+		//把验证码过滤器加载登录过滤器前边
+		.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
 		
 		//----------表单认证相关配置---------------
 		.formLogin() 
