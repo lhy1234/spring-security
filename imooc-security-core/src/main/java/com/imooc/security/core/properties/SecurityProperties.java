@@ -28,6 +28,8 @@ public class SecurityProperties {
 	//第三方登录相关配置
 	private SocialProperties social = new SocialProperties();
 	
+	//oauth2客户端配置
+	private OAuth2Properties oauth2 = new OAuth2Properties();
 
 	public SocialProperties getSocial() {
 		return social;
@@ -51,6 +53,14 @@ public class SecurityProperties {
 
 	public void setCode(ValidateCodeProperties code) {
 		this.code = code;
+	}
+
+	public OAuth2Properties getOauth2() {
+		return oauth2;
+	}
+
+	public void setOauth2(OAuth2Properties oauth2) {
+		this.oauth2 = oauth2;
 	}
 	
 }
