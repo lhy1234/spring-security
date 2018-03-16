@@ -67,6 +67,7 @@ public class ImoocResourceServerConfig extends ResourceServerConfigurerAdapter{
 		smsCodeFilter.afterPropertiesSet();
 
 		http 
+		//短信验证码过滤器
 		.addFilterBefore(smsCodeFilter, UsernamePasswordAuthenticationFilter.class)
 //		.apply(imoocSocialSecurityConfig)//社交登录
 //		.and()

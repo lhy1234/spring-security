@@ -1,5 +1,8 @@
 package com.imooc.security.app;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +13,10 @@ import org.springframework.security.oauth2.config.annotation.configurers.ClientD
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 
 import com.imooc.security.core.properties.OAuth2ClientProperties;
 import com.imooc.security.core.properties.SecurityProperties;
@@ -46,6 +52,19 @@ public class ImoocAuthenticationServerConfig extends AuthorizationServerConfigur
 	private TokenStore tokenStore;
 	
 	/**
+	 * jwt需要的两个增强器之一：将uuid转换为jwt
+	 * 有jwt配置时才生效
+	 */
+	@Autowired(required = false)
+	private JwtAccessTokenConverter jwtAccessTokenConverter;
+		
+	/**
+	 * jwt需要的两个增强器之二：往jwt添加自定义信息
+	 */
+	@Autowired(required = false)
+	private TokenEnhancer jwtTokenEnhancer;
+	
+	/**
 	 * 配置TokenEndpoint 是  /oauth/token处理的入口点
 	 */
 	@Override
@@ -53,6 +72,27 @@ public class ImoocAuthenticationServerConfig extends AuthorizationServerConfigur
 		endpoints.tokenStore(tokenStore)
 				 .authenticationManager(authenticationManager)
 				 .userDetailsService(userDetailsService);
+		
+		/**
+		 * 使用JWT ，有两个增强器：
+		 * 	1，使用JwtAccessTokenConverter将uuid的token转为jwt，用秘钥签名 
+		 *  2，由于默认生成uuid token的方法是private，所以通过ImoocJwtTokenEnhancer 往jwt里添加一些自定义的信息
+		 *  
+		 *  在这里拿到增强器的链，把这两个增强器连起来
+		 */
+		if(jwtAccessTokenConverter != null && jwtTokenEnhancer != null){
+			//拿到增强器链
+			TokenEnhancerChain enhancerChain = new TokenEnhancerChain();
+			
+			List<TokenEnhancer> enhancers = new ArrayList<TokenEnhancer>();	 
+			enhancers.add(jwtAccessTokenConverter);
+			enhancers.add(jwtTokenEnhancer);
+			
+			enhancerChain.setTokenEnhancers(enhancers);
+			
+			endpoints.tokenEnhancer(enhancerChain)
+					.accessTokenConverter(jwtAccessTokenConverter);
+		}
 	}
 	
 	/**
@@ -86,7 +126,8 @@ public class ImoocAuthenticationServerConfig extends AuthorizationServerConfigur
 						.secret(config.getClientSecret())
 						.accessTokenValiditySeconds(config.getAccessTokenValiditySeconds())
 						.authorizedGrantTypes("password","refresh_token") //这些也可以配置也可以写死，看心情
-						.scopes("all","read","write"); 
+						.scopes("all","read","write")
+						.refreshTokenValiditySeconds(3600); //refresh_token 有效期 可以长些  
 			}
 		}
 		

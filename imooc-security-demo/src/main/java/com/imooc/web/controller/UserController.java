@@ -1,11 +1,16 @@
 package com.imooc.web.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
@@ -21,13 +26,23 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.imooc.dto.User;
 import com.imooc.dto.UserQueryCondition;
+import com.imooc.security.core.properties.SecurityProperties;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
+	
+	@Autowired
+	private SecurityProperties securityProperties;
 	
 	/**
 	 * @Description: 条件查询
@@ -130,5 +145,16 @@ public class UserController {
 		return user;
 	}
 
-
+	@GetMapping("/me2")
+	public Object getCurrentUser2(Authentication  user,HttpServletRequest request) throws Exception{
+		
+		String header = request.getHeader("Authorization");
+		String token = StringUtils.substringAfter(header, "bearer ");
+		
+		Claims claims = Jwts.parser().setSigningKey(securityProperties.getOauth2().getJwtSigningKey().getBytes("UTF-8")).parseClaimsJws(token).getBody();
+		String company = (String) claims.get("company");
+		String productId = (String) claims.get("product_id");
+System.err.println("token decode ------>company："+company+",productId:"+productId);
+		return user;
+	}
 }
