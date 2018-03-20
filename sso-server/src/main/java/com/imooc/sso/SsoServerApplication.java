@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * 
  * ClassName: SsoServerApplication 
- * @Description: TODO
+ * @Description: 
  * @author lihaoyang
  * @date 2018年3月16日
  */
