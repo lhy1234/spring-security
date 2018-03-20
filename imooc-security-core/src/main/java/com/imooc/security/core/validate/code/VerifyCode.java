@@ -141,9 +141,9 @@ public class VerifyCode {
         
 
         public static void main(String[] args) throws FileNotFoundException, IOException {
-            VerifyCode vc = new VerifyCode();//创建VerifyCode类的对象
+            VerifyCode vc = new VerifyCode(300,30,4);//创建VerifyCode类的对象
             BufferedImage bi = vc.getImage();//调用getImge()方法获得一个BufferedImage对象
-            VerifyCode.output(bi, new FileOutputStream("C:/验证码3.jpg"));//调用静态方法output()方法将图片保存在文件输出流中
+            VerifyCode.output(bi, new FileOutputStream("E:/验证码3.jpg"));//调用静态方法output()方法将图片保存在文件输出流中
             System.out.println(vc.getText());//在控制台上打印验证码的文本值
         }
 

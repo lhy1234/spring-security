@@ -66,7 +66,9 @@ public class MyUserDetailsService implements UserDetailsService,SocialUserDetail
 		String password = passwordEncoder.encode("123456");
 		System.err.println("加密后密码：  "+password);
 		//参数：用户名|密码|是否启用|账户是否过期|密码是否过期|账户是否锁定|权限集合
-		return new SocialUser(userId,password,true,true,true,true,AuthorityUtils.commaSeparatedStringToAuthorityList("admin,ROLE_USER"));
+		return new SocialUser(userId,password,true,true,true,true,
+				//工具类 将字符串转换为权限集合，ROLE_角色 是spring要求的权限格式
+				AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_ADMIN"));
 	}
 
 }

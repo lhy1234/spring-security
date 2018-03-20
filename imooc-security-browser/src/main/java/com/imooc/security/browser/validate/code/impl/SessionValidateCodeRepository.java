@@ -1,5 +1,7 @@
 package com.imooc.security.browser.validate.code.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.social.connect.web.HttpSessionSessionStrategy;
 import org.springframework.social.connect.web.SessionStrategy;
 import org.springframework.stereotype.Component;
@@ -18,6 +20,8 @@ import com.imooc.security.core.validate.code.ValidateCodeType;
  */
 @Component
 public class SessionValidateCodeRepository implements ValidateCodeRepository{
+	
+	private Logger logger = LoggerFactory.getLogger(getClass());
 	
 	/**
 	 * 验证码放入session时的前缀
@@ -47,16 +51,20 @@ public class SessionValidateCodeRepository implements ValidateCodeRepository{
 	@Override
 	public void save(ServletWebRequest request, ValidateCode code, ValidateCodeType validateCodeType) {
 		sessionStrategy.setAttribute(request, getSessionKey(request,validateCodeType), code);
+		logger.info("------->session存进验证码，session key:"+getSessionKey(request,validateCodeType)+" ,code:"+code.getCode());
 	}
 
 	@Override
 	public ValidateCode get(ServletWebRequest request, ValidateCodeType validateCodeType) {
-		return (ValidateCode)sessionStrategy.getAttribute(request, getSessionKey(request, validateCodeType));
+		ValidateCode validateCode = (ValidateCode)sessionStrategy.getAttribute(request, getSessionKey(request, validateCodeType));
+		logger.info("------->获取到session验证码，session key:"+getSessionKey(request, validateCodeType)+",code:"+validateCode.getCode());
+		return validateCode;
 	}
 
 	@Override
 	public void remove(ServletWebRequest request, ValidateCodeType validateCodeType) {
 		sessionStrategy.removeAttribute(request, getSessionKey(request, validateCodeType));
+		logger.info("------->移除session验证码，session key:"+getSessionKey(request, validateCodeType));
 	}
 
 }

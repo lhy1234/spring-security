@@ -5,11 +5,10 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -18,14 +17,13 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import org.springframework.security.web.session.InvalidSessionStrategy;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 import org.springframework.social.security.SpringSocialConfigurer;
- 
-import com.imooc.security.browser.session.ImoocExpiredSessionStrategy;
-import com.imooc.security.browser.session.ImoocExpiredSessionStrategy2;
+
 import com.imooc.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import com.imooc.security.core.properties.SecurityConstants;
 import com.imooc.security.core.properties.SecurityProperties;
 import com.imooc.security.core.validate.code.SmsCodeFilter;
 import com.imooc.security.core.validate.code.ValidateCodeFilter;
+import com.imooc.security.core.validate.code.ValidateCodeRepository;
 
 @Configuration //这是一个配置
 public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
@@ -64,6 +62,8 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
 	private SpringSocialConfigurer imoocSocialSecurityConfig;
 
 	
+	@Autowired
+	private ValidateCodeRepository validateCodeRepository;
 	
 	/**
 	 * 记住我TokenRepository配置，在登录成功后执行
@@ -110,6 +110,8 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
 	protected void configure(HttpSecurity http) throws Exception {
 		//~~~-------------> 图片验证码过滤器 <------------------
 		ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter();
+		//验证码存储
+		validateCodeFilter.setValidateCodeRepository(validateCodeRepository);
 		//验证码过滤器中使用自己的错误处理
 		validateCodeFilter.setAuthenticationFailureHandler(imoocAuthenticationFailureHandler);
 		//配置的验证码过滤url
@@ -164,16 +166,25 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
 				.expiredSessionStrategy(sessionInformationExpiredStrategy) //session失效策略
 			.and() //?俩and为啥呢
 			.and()
-			//-----------授权相关的配置 ---------------------
+			//--------------授权相关的配置 ---------------------
 			.authorizeRequests()  
 				// /authentication/require：处理登录，securityProperties.getBrowser().getLoginPage():用户配置的登录页
 				.antMatchers(SecurityConstants.DEFAULT_UNAUTHENTICATION_URL, 
 				securityProperties.getBrowser().getLoginPage(),//放过登录页不过滤，否则报错
 				SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_MOBILE,
 				SecurityConstants.SESSION_INVALID_PAGE,
-				SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX+"/*").permitAll() //验证码
+				SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX+"/*")//验证码
+				.permitAll() //-------上边的不用授权也允许访问------
+				//~=========简单的权限控制，只区分是否登录的情况可以配置在这里=======
+				//  /权限表达式 hasRole()   user 的post请求需要ADMIN权限 
+				//.antMatchers(HttpMethod.POST,"/user/*").hasRole("ADMIN") rust风格，加上方法类型
+//				.antMatchers(HttpMethod.POST,"/user/*").hasRole("ADMIN")
+				 //多个权限表达式写法
+				//.antMatchers(HttpMethod.POST,"/user/*").access("hasRole('ADMIN') and hasIpAddress('xxxxx') ")
 				.anyRequest()		//任何请求
-				.authenticated()	//都需要身份认证
+//				.authenticated()	//都需要身份认证
+				.access("@rbacService.hasPermission(request,authentication)")
+				
 			.and() 
 				.csrf().disable() //关闭csrf防护
 			.apply(smsCodeAuthenticationSecurityConfig);//把短信验证码配置应用上

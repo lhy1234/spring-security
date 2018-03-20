@@ -29,9 +29,9 @@ import com.imooc.security.core.validate.code.sms.SmsCodeSender;
 @RestController
 public class ValidateCodeController {
 	
-	public static final String SESSION_KEY_IMAGE = "SESSION_KEY_IMAGE_CODE";	
+//	public static final String SESSION_KEY_IMAGE = "SESSION_KEY_IMAGE_CODE";	
 	
-	public static final String SESSION_KEY_SMS = "SESSION_KEY_SMS_CODE";	
+//	public static final String SESSION_KEY_SMS = "SESSION_KEY_SMS_CODE";	
 	
 //	@Autowired
 //	private SecurityProperties securityProperties;
@@ -79,7 +79,7 @@ public class ValidateCodeController {
 		 * 不能存在session里了，应用调接口，具体依赖app还是browser项目，不同的实现
 		 */
 //		sessionStrategy.setAttribute(new ServletWebRequest(request), SESSION_KEY_IMAGE, imageCode);
-		validateCodeRepository.save((ServletWebRequest) request, imageCode, ValidateCodeType.IMAGE);
+		validateCodeRepository.save(new ServletWebRequest(request), imageCode, ValidateCodeType.IMAGE);
 		
 		ImageIO.write(imageCode.getImage(), "JPEG", response.getOutputStream());
 	}

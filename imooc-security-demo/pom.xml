@@ -12,18 +12,23 @@
   <dependencies>
   
     <!-- 浏览器项目 -->
-  	<!-- <dependency>
+   <dependency>
   		<groupId>com.imooc.security</groupId>
   		<artifactId>imooc-security-browser</artifactId>
   		<version>${imooc.security.version}</version>
-  	</dependency> -->
+  	</dependency> 
   	 <!-- APP项目 -->
-  	<dependency>
+  		<!--<dependency>
   		<groupId>com.imooc.security</groupId>
   		<artifactId>imooc-security-app</artifactId>
   		<version>${imooc.security.version}</version>
-  	</dependency>
-  	
+  	</dependency>-->
+  	<!-- 权限模块 -->
+  	<dependency>
+  		<groupId>com.imooc.security</groupId>
+  		<artifactId>imooc-security-authorize</artifactId>
+  		<version>${imooc.security.version}</version>
+  	</dependency> 
   	<!-- 单元测试 -->
   	 <dependency>
         <groupId>org.springframework.boot</groupId>

@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 
+ * 应用1
  * ClassName: SsoCient1Application 
- * @Description: TODO
+ * @Description: @EnableOAuth2Sso 开启sso
  * @author lihaoyang
  * @date 2018年3月16日
  */

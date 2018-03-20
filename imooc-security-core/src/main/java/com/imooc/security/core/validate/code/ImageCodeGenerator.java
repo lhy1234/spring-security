@@ -1,7 +1,10 @@
 package com.imooc.security.core.validate.code;
 
+import java.awt.image.BufferedImage;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 
@@ -15,6 +18,8 @@ import com.imooc.security.core.properties.SecurityProperties;
  * @date 2018年3月2日
  */
 public class ImageCodeGenerator implements ValidateCodeGenerator {
+	
+	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private SecurityProperties securityProperties;
@@ -28,7 +33,9 @@ public class ImageCodeGenerator implements ValidateCodeGenerator {
     	
     	int charLength = this.securityProperties.getCode().getImage().getLength();
 		VerifyCode verifyCode = new VerifyCode(width,height,charLength);
-		return new ImageCode(verifyCode.getImage(),verifyCode.getText(),this.securityProperties.getCode().getImage().getExpireIn());
+		BufferedImage bufferedImage = verifyCode.getImage();//调用一下这个方法才能往验证码text设置值
+		logger.info("-------ImageCodeGenerator.verifyCode.getText--------> "+verifyCode.getText());
+		return new ImageCode(bufferedImage,verifyCode.getText(),this.securityProperties.getCode().getImage().getExpireIn());
 	}
 
 	public SecurityProperties getSecurityProperties() {
