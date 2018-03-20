@@ -10,3 +10,9 @@ SpringSecurity构建rest服务
 - **imooc-security-browser**：浏览器安全特定代码
 - **imooc-security-app**：app相关特定代码
 - **imooc-security-demo**：样例程序
+- **imooc-sso-server**：单点登录认证服务器
+- **imooc-sso-client1**：单点登录客户端1
+- **imooc-sso-client2**：单点登录客户端2
+- **imooc-security-authorize**：权限模块
+
+
