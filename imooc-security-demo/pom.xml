@@ -84,7 +84,7 @@
     	</plugin>
   	</plugins>
   	<!-- 制定打出的jar包名字 -->
-  	<finalName>demo</finalName>
+  	<finalName>demo</finalName> 
   </build>
-  
+   
 </project>

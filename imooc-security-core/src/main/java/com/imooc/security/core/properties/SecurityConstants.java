@@ -57,4 +57,8 @@ public interface SecurityConstants {
 	 */
 	public static final String DEFAULT_PARAMETER_NAME_MOBILE = "mobile";
 
+	public static final String DEFAULT_SIGN_IN_PROCESSING_URL_MOBILE = null;
+
+	public static final String DEFAULT_SIGN_IN_PROCESSING_URL_OPENID = null;
+
 }

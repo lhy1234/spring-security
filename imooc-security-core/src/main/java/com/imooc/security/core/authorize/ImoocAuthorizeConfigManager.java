@@ -1,4 +1,4 @@
-package com.imooc.security.core.authentication.authorize;
+package com.imooc.security.core.authorize;
 
 import java.util.Set;
 

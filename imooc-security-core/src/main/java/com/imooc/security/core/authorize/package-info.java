@@ -11,4 +11,4 @@
  * @author lihaoyang
  * @date 2018年3月20日
  */
-package com.imooc.security.core.authentication.authorize;
+package com.imooc.security.core.authorize;
